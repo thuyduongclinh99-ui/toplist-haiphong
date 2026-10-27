@@ -30,8 +30,10 @@ function thp_supabase_config() {
 		return null;
 	}
 	$bucket = getenv( 'SUPABASE_BUCKET' ) ? getenv( 'SUPABASE_BUCKET' ) : 'media';
+	// https://<ref>.supabase.co → https://<ref>.storage.supabase.co/storage/v1/s3 (the endpoint shown in Storage → S3).
+	$s3 = getenv( 'SUPABASE_S3_ENDPOINT' ) ? rtrim( getenv( 'SUPABASE_S3_ENDPOINT' ), '/' ) : preg_replace( '#^(https://[^.]+)\.supabase\.co$#', '$1.storage.supabase.co', $url ) . '/storage/v1/s3';
 	return array(
-		's3'     => getenv( 'SUPABASE_S3_ENDPOINT' ) ? rtrim( getenv( 'SUPABASE_S3_ENDPOINT' ), '/' ) : $url . '/storage/v1/s3',
+		's3'     => $s3,
 		'region' => getenv( 'SUPABASE_S3_REGION' ) ? getenv( 'SUPABASE_S3_REGION' ) : 'ap-southeast-1',
 		'key_id' => $key_id,
 		'secret' => $secret,
