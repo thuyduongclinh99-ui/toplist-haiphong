@@ -1,6 +1,6 @@
 # Kế hoạch: WordPress trên Render + Supabase + GitHub
 
-**Trạng thái:** chờ bạn tạo tài khoản (Giai đoạn 0).
+**Trạng thái:** Giai đoạn 0–1 xong. Repo công khai: https://github.com/thuyduongclinh99-ui/toplist-haiphong. Đang ở Giai đoạn 2: tạo dịch vụ trên Render.
 **Mục tiêu:** bản Toplist Hải Phòng chạy công khai tại `https://<ten>.onrender.com`, không mua hosting hay tên miền. Mã nguồn trên GitHub, dữ liệu và ảnh trên Supabase. Bản InfinityFree giữ làm dự phòng.
 
 ## Kiến trúc

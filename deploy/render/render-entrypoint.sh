@@ -20,9 +20,14 @@ sed -ri "s/<VirtualHost \*:80>/<VirtualHost *:${PORT}>/" /etc/apache2/sites-enab
 
 docker-entrypoint.sh apache2-setup-only
 
-# Supabase can take a moment to wake up from a pause.
+# Supabase can take a moment to wake up from a pause. Check PostgreSQL
+# directly: WordPress itself errors out until it has been installed.
 for attempt in $(seq 1 10); do
-	if wpcli eval 'echo "db ok";' >/dev/null 2>&1; then
+	if php -r '
+		[$host, $port] = array_pad(explode(":", getenv("WORDPRESS_DB_HOST")), 2, "5432");
+		$conn = @pg_connect(sprintf("host=%s port=%s dbname=%s user=%s password=%s connect_timeout=5",
+			$host, $port, getenv("WORDPRESS_DB_NAME"), getenv("WORDPRESS_DB_USER"), getenv("WORDPRESS_DB_PASSWORD")));
+		exit($conn ? 0 : 1);'; then
 		break
 	fi
 	echo "Waiting for the database (attempt ${attempt})..."
@@ -44,7 +49,7 @@ fi
 # Translation files live on the wiped disk, so fetch them on every boot.
 wpcli language core install vi --activate >/dev/null 2>&1 || echo "Could not download the Vietnamese language pack."
 
-# Keep the WordPress tables out of Supabase's public REST API; create the media bucket.
+# Keep the WordPress tables out of Supabase's public REST API; repair images.
 wpcli eval-file /var/www/html/wp-content/mu-plugins/supabase/setup.php || true
 
 if [ "$(wpcli option get thp_demo_imported 2>/dev/null || true)" != "1" ]; then

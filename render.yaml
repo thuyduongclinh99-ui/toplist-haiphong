@@ -20,11 +20,16 @@ services:
         sync: false
       - key: WORDPRESS_DB_NAME
         value: postgres
-      # Supabase → Project Settings → API: Project URL and the service_role key.
+      # Supabase → Project Settings → API: Project URL.
       - key: SUPABASE_URL
         sync: false
-      - key: SUPABASE_SERVICE_ROLE_KEY
+      # Supabase → Storage → Settings → S3 access keys (bucket "media" must be public).
+      - key: SUPABASE_S3_ACCESS_KEY_ID
         sync: false
+      - key: SUPABASE_S3_SECRET_ACCESS_KEY
+        sync: false
+      - key: SUPABASE_S3_REGION
+        value: ap-southeast-1
       - key: SUPABASE_BUCKET
         value: media
       # First WordPress administrator, created on the first boot.
