@@ -20,8 +20,14 @@ sed -ri "s/<VirtualHost \*:80>/<VirtualHost *:${PORT}>/" /etc/apache2/sites-enab
 
 # Apache's own redirects (e.g. /wp-admin → /wp-admin/) must point at the public
 # HTTPS address, not the internal http://host:$PORT behind Render's proxy.
-if [ -n "${RENDER_EXTERNAL_HOSTNAME:-}" ]; then
-	printf 'ServerName https://%s:443\nUseCanonicalName On\n' "$RENDER_EXTERNAL_HOSTNAME" > /etc/apache2/conf-enabled/render-public-url.conf
+# Set inside the VirtualHost: it does not inherit the scheme/port of a global ServerName.
+PUBLIC_HOST="${RENDER_EXTERNAL_HOSTNAME:-}"
+if [ -z "$PUBLIC_HOST" ] && [ -n "${RENDER_EXTERNAL_URL:-}" ]; then
+	PUBLIC_HOST="${RENDER_EXTERNAL_URL#https://}"
+fi
+if [ -n "$PUBLIC_HOST" ]; then
+	sed -ri "s|^(\s*<VirtualHost \*:${PORT}>)\$|\1\n\tServerName https://${PUBLIC_HOST}:443\n\tUseCanonicalName On|" /etc/apache2/sites-enabled/000-default.conf
+	echo "Apache public address: https://${PUBLIC_HOST}"
 fi
 
 docker-entrypoint.sh apache2-setup-only
