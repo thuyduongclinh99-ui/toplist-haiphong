@@ -18,6 +18,12 @@ wpcli() {
 sed -ri "s/^Listen 80\$/Listen ${PORT}/" /etc/apache2/ports.conf
 sed -ri "s/<VirtualHost \*:80>/<VirtualHost *:${PORT}>/" /etc/apache2/sites-enabled/000-default.conf
 
+# Apache's own redirects (e.g. /wp-admin → /wp-admin/) must point at the public
+# HTTPS address, not the internal http://host:$PORT behind Render's proxy.
+if [ -n "${RENDER_EXTERNAL_HOSTNAME:-}" ]; then
+	printf 'ServerName https://%s:443\nUseCanonicalName On\n' "$RENDER_EXTERNAL_HOSTNAME" > /etc/apache2/conf-enabled/render-public-url.conf
+fi
+
 docker-entrypoint.sh apache2-setup-only
 
 # Supabase can take a moment to wake up from a pause. Check PostgreSQL
