@@ -1,4 +1,52 @@
-# Đưa Toplist Hải Phòng lên mạng miễn phí (InfinityFree)
+# Đưa Toplist Hải Phòng lên mạng miễn phí
+
+Có hai bản, đều không mua hosting hay tên miền:
+
+| Bản | Địa chỉ | Nền tảng |
+|---|---|---|
+| **Render + Supabase + GitHub** (đang chạy) | https://toplist-haiphong.onrender.com | Render chạy WordPress từ repo GitHub, dữ liệu và ảnh trên Supabase |
+| InfinityFree (dự phòng) | http://toplisthaiphong.free.nf | Hosting PHP/MySQL miễn phí |
+
+## Bản Render + Supabase + GitHub
+
+- **Mã nguồn:** https://github.com/thuyduongclinh99-ui/toplist-haiphong (công khai, không chứa mật khẩu hay khóa).
+- **Render** (Web Service miễn phí, Docker): chạy WordPress 6.5.13 + PHP 8.2 theo [deploy/render/Dockerfile](deploy/render/Dockerfile), cấu hình trong [render.yaml](render.yaml).
+- **Supabase** (project `toplisthaiphong`, Singapore):
+  - PostgreSQL lưu toàn bộ dữ liệu WordPress, qua lớp chuyển đổi PG4WP.
+  - Storage, bucket công khai `media`, lưu ảnh qua giao thức S3 ([mu-plugin](deploy/render/mu-plugins/supabase-media.php)).
+- **Quản trị:** https://toplist-haiphong.onrender.com/wp-admin. Tên đăng nhập là `toplisthp`, mật khẩu là giá trị bạn đặt ở biến `WP_ADMIN_PASSWORD` trên Render.
+
+**Khi khởi động** ([render-entrypoint.sh](deploy/render/render-entrypoint.sh)), mỗi lần:
+- Cài WordPress nếu database còn trống.
+- Tải gói tiếng Việt.
+- Bật Row Level Security để API công khai của Supabase không đọc được bảng WordPress.
+- Tải lại những ảnh chưa có trên Storage.
+
+Lần đầu còn nạp thêm 28 bài song ngữ.
+
+**Biến môi trường trên Render** (Render → dịch vụ → *Environment*):
+
+| Biến | Lấy ở đâu |
+|---|---|
+| `WORDPRESS_DB_HOST`, `WORDPRESS_DB_USER` | Supabase → **Connect → Direct → Session pooler** (host kèm `:5432`, user `postgres.<mã project>`) |
+| `WORDPRESS_DB_PASSWORD` | Mật khẩu database Supabase (chỉ chữ và số) |
+| `SUPABASE_URL` | `https://<mã project>.supabase.co` |
+| `SUPABASE_S3_ACCESS_KEY_ID`, `SUPABASE_S3_SECRET_ACCESS_KEY` | Supabase → **Storage → S3 Configuration → New access key** |
+| `SUPABASE_S3_REGION`, `SUPABASE_BUCKET` | `ap-southeast-1`, `media` |
+| `WP_ADMIN_USER`, `WP_ADMIN_PASSWORD`, `WP_ADMIN_EMAIL` | Tài khoản quản trị tạo ở lần khởi động đầu |
+
+**Cập nhật site:** sửa code rồi đẩy lên nhánh `main`, Render tự build và deploy lại (khoảng 5 phút). Thêm `[skip render]` vào nội dung commit nếu chỉ sửa tài liệu.
+
+**Giới hạn của gói miễn phí:**
+- Render tự ngủ sau 15 phút không có người vào, lần vào sau chờ khoảng 1 phút.
+- Supabase tạm dừng project sau 7 ngày không hoạt động.
+- GitHub Actions [keepalive.yml](.github/workflows/keepalive.yml) gọi site mỗi 10 phút để tránh cả hai việc trên (biến repo `SITE_URL`). Nếu Supabase vẫn bị tạm dừng, vào dashboard bấm **Restore**, dữ liệu không mất.
+- **Không cài plugin hay theme từ trang quản trị:** ổ đĩa Render bị xóa mỗi lần khởi động lại, nên trang quản trị đã khóa chức năng này (`DISALLOW_FILE_MODS`). Muốn thêm plugin thì thêm vào Dockerfile.
+- Ảnh tải lên từ thư viện Media được tự đẩy sang Supabase Storage nên không mất.
+
+---
+
+# Bản dự phòng: InfinityFree
 
 Không cần mua hosting hay tên miền. Site sẽ có địa chỉ dạng `toplisthaiphong.rf.gd` hoặc `toplisthaiphong.free.nf` (tên miền phụ miễn phí), có HTTPS.
 

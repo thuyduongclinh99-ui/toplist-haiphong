@@ -1,6 +1,8 @@
 # Kế hoạch: WordPress trên Render + Supabase + GitHub
 
-**Trạng thái:** Giai đoạn 0–1 xong. Repo công khai: https://github.com/thuyduongclinh99-ui/toplist-haiphong. Đang ở Giai đoạn 2: tạo dịch vụ trên Render.
+**Trạng thái:** hoàn thành (27/10/2026). Site: https://toplist-haiphong.onrender.com. Repo: https://github.com/thuyduongclinh99-ui/toplist-haiphong.
+
+**Thay đổi so với kế hoạch:** ảnh đi qua API S3 của Supabase Storage thay vì REST, vì REST từ chối khóa `sb_secret_` mới (lỗi `Invalid Compact JWS`). Bucket `media` được tạo trên dashboard.
 **Mục tiêu:** bản Toplist Hải Phòng chạy công khai tại `https://<ten>.onrender.com`, không mua hosting hay tên miền. Mã nguồn trên GitHub, dữ liệu và ảnh trên Supabase. Bản InfinityFree giữ làm dự phòng.
 
 ## Kiến trúc
