@@ -105,7 +105,7 @@ while ( have_posts() ) :
 				<?php if ( $thp_related ) : ?>
 					<section class="flex flex-col gap-4">
 						<?php thp_section_heading( thp__( 'Địa điểm tương tự' ), $thp_term ? sprintf( thp__( 'Cùng chuyên mục %s' ), $thp_term->name ) : '', 'secondary', '', $thp_term ? get_category_link( $thp_term ) : '' ); ?>
-						<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+						<div class="thp-rail">
 							<?php
 							global $post;
 							foreach ( $thp_related as $post ) { // phpcs:ignore WordPress.WP.GlobalVariablesOverride -- restored by wp_reset_postdata().

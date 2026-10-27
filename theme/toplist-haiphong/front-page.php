@@ -27,7 +27,7 @@ $thp_cta        = array( 'bg-secondary text-on-secondary hover:bg-secondary-cont
 							$thp_term = thp_primary_category( $thp_post->ID );
 							$thp_img  = get_the_post_thumbnail_url( $thp_post, 'thp-hero' );
 							?>
-							<div class="snap-start shrink-0 w-full relative h-[420px] sm:h-[460px] md:h-[490px] bg-cover bg-center flex flex-col justify-end p-6 sm:p-10" style="background-image:url('<?php echo esc_url( $thp_img ); ?>')" role="group" aria-roledescription="slide" aria-label="<?php echo esc_attr( ( $thp_i + 1 ) . ' / ' . count( $thp_hero ) ); ?>">
+							<div class="snap-start shrink-0 w-full relative h-[380px] sm:h-[460px] md:h-[490px] bg-cover bg-center flex flex-col justify-end p-5 sm:p-10" style="background-image:url('<?php echo esc_url( $thp_img ); ?>')" role="group" aria-roledescription="slide" aria-label="<?php echo esc_attr( ( $thp_i + 1 ) . ' / ' . count( $thp_hero ) ); ?>">
 								<div class="absolute inset-0 bg-gradient-to-t from-on-background/95 via-on-background/50 to-transparent"></div>
 								<div class="relative z-10 flex flex-col gap-3 max-w-2xl">
 									<div class="flex flex-wrap items-center gap-2">
@@ -39,11 +39,11 @@ $thp_cta        = array( 'bg-secondary text-on-secondary hover:bg-secondary-cont
 									<<?php echo 0 === $thp_i ? 'h1' : 'h2'; ?> class="text-[26px] leading-[34px] sm:text-headline-xl font-extrabold tracking-tight text-on-tertiary uppercase line-clamp-3"><?php echo esc_html( get_the_title( $thp_post ) ); ?></<?php echo 0 === $thp_i ? 'h1' : 'h2'; ?>>
 									<p class="text-body-md text-surface-container-low line-clamp-2 max-w-xl"><?php echo esc_html( get_the_excerpt( $thp_post ) ); ?></p>
 									<div class="flex flex-wrap items-center gap-3 pt-2">
-										<a class="inline-flex items-center gap-2 px-6 py-3 rounded-xl <?php echo esc_attr( $thp_cta[ $thp_i % 4 ] ); ?> text-label-lg shadow-md hover:shadow-lg transition-all duration-200 group/btn" href="<?php echo esc_url( get_permalink( $thp_post ) ); ?>">
+										<a class="inline-flex items-center gap-1.5 sm:gap-2 px-4 py-2.5 sm:px-6 sm:py-3 rounded-xl <?php echo esc_attr( $thp_cta[ $thp_i % 4 ] ); ?> text-label-md sm:text-label-lg shadow-md hover:shadow-lg transition-all duration-200 group/btn" href="<?php echo esc_url( get_permalink( $thp_post ) ); ?>">
 											<span><?php thp_e( 'Khám phá ngay' ); ?></span><?php echo thp_icon( 'arrow_forward', 'text-[18px] transition-transform group-hover/btn:translate-x-1' ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
 										</a>
 										<?php if ( $thp_term ) : ?>
-											<a class="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-surface-container-lowest/90 backdrop-blur-md text-primary text-label-lg shadow-sm hover:bg-surface-container-lowest transition-all duration-200" href="<?php echo esc_url( get_category_link( $thp_term ) ); ?>">
+											<a class="inline-flex items-center gap-1.5 sm:gap-2 px-4 py-2.5 sm:px-5 sm:py-3 rounded-xl bg-surface-container-lowest/90 backdrop-blur-md text-primary text-label-md sm:text-label-lg shadow-sm hover:bg-surface-container-lowest transition-all duration-200" href="<?php echo esc_url( get_category_link( $thp_term ) ); ?>">
 												<?php echo thp_icon( 'explore', 'text-[20px]' ); // phpcs:ignore WordPress.Security.EscapeOutput ?><span><?php echo esc_html( sprintf( thp__( 'Xem %s' ), mb_strtolower( $thp_term->name ) ) ); ?></span>
 											</a>
 										<?php endif; ?>
@@ -56,7 +56,7 @@ $thp_cta        = array( 'bg-secondary text-on-secondary hover:bg-secondary-cont
 						<button type="button" data-thp-prev aria-label="<?php echo esc_attr( thp__( 'Slide trước' ) ); ?>" class="hidden sm:flex absolute left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-surface-container-lowest/80 backdrop-blur-md text-on-surface hover:text-primary hover:bg-surface-container-lowest items-center justify-center shadow-md transition-all"><?php echo thp_icon( 'chevron_left', 'text-[22px]' ); // phpcs:ignore WordPress.Security.EscapeOutput ?></button>
 						<button type="button" data-thp-next aria-label="<?php echo esc_attr( thp__( 'Slide tiếp' ) ); ?>" class="hidden sm:flex absolute right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-surface-container-lowest/80 backdrop-blur-md text-on-surface hover:text-primary hover:bg-surface-container-lowest items-center justify-center shadow-md transition-all"><?php echo thp_icon( 'chevron_right', 'text-[22px]' ); // phpcs:ignore WordPress.Security.EscapeOutput ?></button>
 						<div class="absolute top-4 right-4 sm:top-auto sm:bottom-4 sm:right-6 z-20 flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-container-lowest/80 backdrop-blur-md">
-							<span class="text-[11px] font-bold text-on-surface tracking-wide uppercase"><?php thp_e( 'Khám phá' ); ?></span>
+							<span class="hidden sm:inline text-[11px] font-bold text-on-surface tracking-wide uppercase"><?php thp_e( 'Khám phá' ); ?></span>
 							<?php for ( $thp_d = 0; $thp_d < count( $thp_hero ); $thp_d++ ) : // phpcs:ignore Generic.CodeAnalysis.ForLoopWithTestFunctionCall ?>
 								<button type="button" data-thp-dot="<?php echo (int) $thp_d; ?>" aria-label="<?php echo esc_attr( sprintf( thp__( 'Tới slide %d' ), $thp_d + 1 ) ); ?>" class="w-2.5 h-2.5 rounded-full bg-outline-variant hover:bg-primary transition-all aria-[current=true]:bg-secondary aria-[current=true]:w-5"></button>
 							<?php endfor; ?>
@@ -111,7 +111,7 @@ $thp_cta        = array( 'bg-secondary text-on-secondary hover:bg-secondary-cont
 				?>
 				<div class="flex flex-col gap-4">
 					<?php thp_section_heading( thp__( $thp_section['title'] ), thp__( $thp_section['subtitle'] ), $thp_section['accent'], $thp_term->name, get_category_link( $thp_term ) ); ?>
-					<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+					<div class="thp-rail">
 						<?php
 						while ( $thp_q->have_posts() ) {
 							$thp_q->the_post();

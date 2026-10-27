@@ -52,8 +52,8 @@ $thp_switcher = function ( $langs, $class ) {
 <a class="screen-reader-text focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[60] focus:bg-surface-container-lowest focus:px-4 focus:py-2 focus:rounded-lg" href="#main"><?php thp_e( 'Bỏ qua đến nội dung' ); ?></a>
 
 <header class="fixed top-[var(--wp-admin--admin-bar--height,0px)] left-0 right-0 z-50 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
-	<div class="h-20 max-w-7xl mx-auto px-4 sm:px-margin flex items-center justify-between gap-space-md">
-		<?php thp_logo( 'h-11 sm:h-12 w-auto' ); ?>
+	<div class="h-16 lg:h-20 max-w-7xl mx-auto px-4 sm:px-margin flex items-center justify-between gap-space-md">
+		<?php thp_logo( 'h-10 sm:h-12 w-auto' ); ?>
 
 		<nav class="hidden xl:block" aria-label="<?php echo esc_attr( thp__( 'Menu chính' ) ); ?>">
 			<?php
@@ -83,9 +83,13 @@ $thp_switcher = function ( $langs, $class ) {
 		</div>
 	</div>
 
+	<?php // Phones and tablets: search always visible under the logo (desktop has it in the sidebar). ?>
+	<div class="lg:hidden h-14 px-4 sm:px-margin flex items-center">
+		<div class="w-full max-w-7xl mx-auto"><?php get_search_form(); ?></div>
+	</div>
+
 	<div id="thp-mobile-menu" class="xl:hidden hidden border-t border-surface-container-high bg-surface-container-lowest">
 		<div class="max-w-7xl mx-auto px-4 sm:px-margin py-4 flex flex-col gap-4">
-			<div class="lg:hidden"><?php get_search_form(); ?></div>
 			<?php
 			wp_nav_menu(
 				array(
@@ -107,7 +111,7 @@ $thp_switcher = function ( $langs, $class ) {
 	</div>
 </header>
 
-<main id="main" class="w-full pt-20 min-h-[calc(100vh-80px)]">
+<main id="main" class="w-full pt-[120px] lg:pt-20 min-h-[calc(100vh-80px)]">
 	<div class="w-full bg-surface-container-low py-2.5 px-4 sm:px-margin">
 		<div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3 text-on-surface-variant text-label-md">
 			<?php if ( $thp_latest ) : ?>

@@ -3,6 +3,15 @@
 @tailwind utilities;
 
 @layer base {
+	html {
+		/* Keep anchor targets (#comments…) clear of the fixed header. */
+		scroll-padding-top: 136px;
+	}
+	@media (min-width: 1024px) {
+		html {
+			scroll-padding-top: 96px;
+		}
+	}
 	body {
 		@apply bg-surface font-sans text-body-md text-on-surface antialiased;
 	}
@@ -140,6 +149,18 @@
 		to {
 			transform: translateX(-50%);
 		}
+	}
+
+	/* Card row: swipeable on phones (the next card peeks in), a grid from sm up. */
+	.thp-rail {
+		@apply -mx-4 flex snap-x snap-mandatory scroll-pl-4 gap-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0 md:grid-cols-3;
+		scrollbar-width: none;
+	}
+	.thp-rail::-webkit-scrollbar {
+		display: none;
+	}
+	.thp-rail > * {
+		@apply w-[80%] shrink-0 snap-start sm:w-auto;
 	}
 
 	.card-lift {

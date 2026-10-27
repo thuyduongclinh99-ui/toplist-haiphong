@@ -10,7 +10,7 @@ $thp_top = thp_top_posts( 10 );
 $thp_map = thp_option( 'thp_map_query' );
 ?>
 <aside class="lg:col-span-4 flex flex-col gap-space-lg w-full">
-	<div class="w-full rounded-2xl bg-surface-container-lowest p-4 shadow-sm">
+	<div class="hidden lg:block w-full rounded-2xl bg-surface-container-lowest p-4 shadow-sm">
 		<?php get_search_form(); ?>
 	</div>
 

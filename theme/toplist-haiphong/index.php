@@ -65,7 +65,7 @@ if ( $thp_search ) {
 				</div>
 				<p class="text-body-md text-on-surface-variant max-w-2xl"><?php echo esc_html( $thp_desc ); ?></p>
 				<?php if ( is_search() ) : ?>
-					<div class="max-w-lg mt-2"><?php get_search_form(); ?></div>
+					<div class="hidden lg:block max-w-lg mt-2"><?php get_search_form(); ?></div>
 				<?php endif; ?>
 			</header>
 
