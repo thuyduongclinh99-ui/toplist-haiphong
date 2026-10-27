@@ -1,0 +1,15 @@
+{
+  "name": "toplist-haiphong",
+  "private": true,
+  "description": "WordPress theme Toplist Hải Phòng",
+  "scripts": {
+    "build:css": "tailwindcss -c tailwind.config.js -i src/tailwind.css -o theme/toplist-haiphong/assets/css/main.css --minify",
+    "watch:css": "tailwindcss -c tailwind.config.js -i src/tailwind.css -o theme/toplist-haiphong/assets/css/main.css --watch",
+    "dev": "wp-playground-cli server --port=9400 --php=8.3 --mount=./theme/toplist-haiphong:/wordpress/wp-content/themes/toplist-haiphong --mount=./plugins/toplist-demo-content:/wordpress/wp-content/plugins/toplist-demo-content --blueprint=./blueprint.json",
+    "zip": "npm run build:css && powershell -NoProfile -ExecutionPolicy Bypass -File scripts/zip-theme.ps1 -Source theme/toplist-haiphong && powershell -NoProfile -ExecutionPolicy Bypass -File scripts/zip-theme.ps1 -Source plugins/toplist-demo-content -Exclude data/images"
+  },
+  "devDependencies": {
+    "@wp-playground/cli": "3.1.58",
+    "tailwindcss": "3.4.19"
+  }
+}

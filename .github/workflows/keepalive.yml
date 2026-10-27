@@ -1,0 +1,19 @@
+# Visits the Render site regularly so the free instance does not fall asleep
+# (it sleeps after 15 minutes without traffic) and the Supabase project stays
+# active (free projects pause after a week without use).
+# Set the repository variable SITE_URL, e.g. https://toplist-haiphong.onrender.com
+name: Keep site awake
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    if: ${{ vars.SITE_URL != '' }}
+    steps:
+      - name: Request the homepage
+        run: curl --fail --silent --show-error --max-time 120 --output /dev/null "${{ vars.SITE_URL }}/"

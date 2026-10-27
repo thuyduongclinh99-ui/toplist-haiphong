@@ -1,0 +1,176 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+	body {
+		@apply bg-surface font-sans text-body-md text-on-surface antialiased;
+	}
+	.material-symbols-outlined {
+		font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+		line-height: 1;
+	}
+	.material-symbols-outlined.fill {
+		font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+	}
+	.no-scrollbar {
+		scrollbar-width: none;
+	}
+	.no-scrollbar::-webkit-scrollbar {
+		display: none;
+	}
+	.screen-reader-text {
+		@apply sr-only;
+	}
+}
+
+@layer components {
+	/* Post body typography: editorial rhythm from DESIGN.md (line-height ~1.55). */
+	.entry-content {
+		@apply text-body-lg text-on-surface;
+	}
+	.entry-content > * + * {
+		@apply mt-5;
+	}
+	.entry-content h2 {
+		@apply mt-10 flex items-center gap-2.5 text-headline-md font-bold tracking-tight text-on-surface;
+	}
+	.entry-content h2::before {
+		content: '';
+		@apply inline-block h-6 w-2 shrink-0 rounded-full bg-primary;
+	}
+	.entry-content h3 {
+		@apply mt-8 text-headline-sm font-bold text-on-surface;
+	}
+	.entry-content a {
+		@apply font-semibold text-primary underline decoration-primary/30 underline-offset-4 hover:decoration-primary;
+	}
+	.entry-content ul,
+	.entry-content ol {
+		@apply space-y-2 pl-6;
+	}
+	.entry-content ul {
+		@apply list-disc marker:text-secondary;
+	}
+	.entry-content ol {
+		@apply list-decimal marker:font-bold marker:text-primary;
+	}
+	.entry-content strong {
+		@apply font-bold text-on-surface;
+	}
+	.entry-content blockquote {
+		@apply rounded-r-2xl border-l-4 border-secondary bg-surface-container-low px-5 py-4 italic text-on-surface-variant;
+	}
+	.entry-content img,
+	.entry-content figure {
+		@apply rounded-2xl;
+	}
+	.entry-content figcaption {
+		@apply mt-2 text-center text-body-sm text-on-surface-variant;
+	}
+
+	/* Menus rendered by wp_nav_menu. */
+	.primary-menu a {
+		@apply block rounded-lg px-3 py-1.5 text-label-lg text-on-surface-variant transition-colors hover:bg-surface-container-low hover:text-on-surface;
+	}
+	.primary-menu.mobile a {
+		@apply px-3 py-2.5 text-body-md;
+	}
+	.primary-menu .current-menu-item > a,
+	.primary-menu .current-menu-ancestor > a,
+	.primary-menu .current-post-ancestor > a {
+		@apply bg-primary-container font-bold text-on-primary-container hover:bg-primary-container hover:text-on-primary-container;
+	}
+	/* Dropdown ("Danh mục khác"): opens on hover or keyboard focus on desktop,
+	   shown indented inside the mobile menu. */
+	.primary-menu .menu-item-has-children {
+		@apply relative;
+	}
+	.primary-menu .menu-item-has-children > a {
+		@apply inline-flex items-center gap-0.5;
+	}
+	.primary-menu:not(.mobile) .sub-menu {
+		@apply invisible absolute left-0 top-full z-50 mt-2 flex min-w-[210px] flex-col gap-0.5 rounded-xl border border-surface-container-high bg-surface-container-lowest p-2 opacity-0 shadow-[0_20px_32px_-8px_rgba(15,23,42,0.12)] transition-all;
+	}
+	/* Invisible bridge over the gap so the pointer can reach the panel. */
+	.primary-menu:not(.mobile) .sub-menu::before {
+		content: '';
+		@apply absolute inset-x-0 -top-2 h-2;
+	}
+	.primary-menu:not(.mobile) .menu-item-has-children:hover > .sub-menu,
+	.primary-menu:not(.mobile) .menu-item-has-children:focus-within > .sub-menu {
+		@apply visible opacity-100;
+	}
+	.primary-menu .sub-menu a {
+		@apply text-body-sm;
+	}
+	.primary-menu.mobile .sub-menu {
+		@apply ml-3 mt-1 flex flex-col gap-1 border-l-2 border-surface-container-high pl-2;
+	}
+
+	.footer-menu a {
+		@apply transition-colors hover:text-on-primary hover:underline underline-offset-4;
+	}
+
+	/* Homepage photo strip: the track holds the list twice, so moving it by
+	   half its width loops seamlessly. Each item uses right padding instead of
+	   a flex gap to keep both halves exactly equal. */
+	.thp-marquee {
+		mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent);
+	}
+	.thp-marquee-track {
+		animation: thp-marquee var(--thp-marquee-duration, 40s) linear infinite;
+	}
+	.thp-marquee:hover .thp-marquee-track,
+	.thp-marquee:focus-within .thp-marquee-track {
+		animation-play-state: paused;
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.thp-marquee {
+			@apply overflow-x-auto;
+		}
+		.thp-marquee-track {
+			animation: none;
+		}
+		.thp-marquee-track > [aria-hidden='true'] {
+			display: none;
+		}
+	}
+	@keyframes thp-marquee {
+		to {
+			transform: translateX(-50%);
+		}
+	}
+
+	.card-lift {
+		@apply transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_12px_24px_-6px_rgba(2,132,199,0.12),0_4px_8px_-2px_rgba(15,23,42,0.06)];
+	}
+
+	/* WordPress pagination output (paginate_links). */
+	.pagination .nav-links {
+		@apply flex flex-wrap items-center justify-center gap-2;
+	}
+	.pagination .page-numbers {
+		@apply inline-flex h-10 min-w-10 items-center justify-center rounded-xl bg-surface-container-lowest px-3 text-label-lg text-on-surface shadow-sm transition-colors hover:bg-surface-container-low;
+	}
+	.pagination .page-numbers.current {
+		@apply bg-primary text-on-primary;
+	}
+
+	/* Comment form */
+	.comment-form label {
+		@apply mb-1 block text-label-lg text-on-surface;
+	}
+	.comment-form input[type='text'],
+	.comment-form input[type='email'],
+	.comment-form input[type='url'],
+	.comment-form textarea {
+		@apply w-full rounded-xl border border-outline-variant bg-surface-container-lowest px-4 py-2.5 text-body-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20;
+	}
+	.comment-form .submit {
+		@apply cursor-pointer rounded-xl bg-primary px-6 py-3 text-label-lg text-on-primary hover:bg-primary-container;
+	}
+	.comment-form > p {
+		@apply mb-4;
+	}
+}

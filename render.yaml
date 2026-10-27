@@ -1,0 +1,60 @@
+# Render Blueprint: one free Docker web service running WordPress on Supabase.
+# Values marked "sync: false" are asked for in the Render dashboard and are
+# never stored in this repository.
+services:
+  - type: web
+    name: toplist-haiphong
+    runtime: docker
+    plan: free
+    region: singapore
+    dockerContext: .
+    dockerfilePath: ./deploy/render/Dockerfile
+    healthCheckPath: /wp-login.php
+    envVars:
+      # Supabase → Connect → Session pooler (host, port 5432, user postgres.<ref>).
+      - key: WORDPRESS_DB_HOST
+        sync: false
+      - key: WORDPRESS_DB_USER
+        sync: false
+      - key: WORDPRESS_DB_PASSWORD
+        sync: false
+      - key: WORDPRESS_DB_NAME
+        value: postgres
+      # Supabase → Project Settings → API: Project URL and the service_role key.
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: SUPABASE_BUCKET
+        value: media
+      # First WordPress administrator, created on the first boot.
+      - key: WP_ADMIN_USER
+        sync: false
+      - key: WP_ADMIN_PASSWORD
+        sync: false
+      - key: WP_ADMIN_EMAIL
+        sync: false
+      # Fixed salts so logins survive restarts.
+      - key: WORDPRESS_AUTH_KEY
+        generateValue: true
+      - key: WORDPRESS_SECURE_AUTH_KEY
+        generateValue: true
+      - key: WORDPRESS_LOGGED_IN_KEY
+        generateValue: true
+      - key: WORDPRESS_NONCE_KEY
+        generateValue: true
+      - key: WORDPRESS_AUTH_SALT
+        generateValue: true
+      - key: WORDPRESS_SECURE_AUTH_SALT
+        generateValue: true
+      - key: WORDPRESS_LOGGED_IN_SALT
+        generateValue: true
+      - key: WORDPRESS_NONCE_SALT
+        generateValue: true
+      - key: WORDPRESS_CONFIG_EXTRA
+        value: |
+          define( 'WP_HOME', getenv( 'RENDER_EXTERNAL_URL' ) ?: 'http://localhost' );
+          define( 'WP_SITEURL', WP_HOME );
+          // Plugins/themes added from wp-admin would disappear on restart; add them in the Dockerfile instead.
+          define( 'DISALLOW_FILE_MODS', true );
+          define( 'WP_AUTO_UPDATE_CORE', false );

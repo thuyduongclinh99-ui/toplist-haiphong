@@ -1,0 +1,5 @@
+#!/bin/sh
+# No-op "server". The official WordPress entrypoint only copies WordPress into
+# /var/www/html and writes wp-config.php when its command starts with
+# "apache2"; running it with this command does that setup and then exits.
+exit 0

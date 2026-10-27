@@ -1,0 +1,5 @@
+# Shell scripts run inside the Linux container: keep LF line endings.
+*.sh text eol=lf
+deploy/render/apache2-setup-only text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf

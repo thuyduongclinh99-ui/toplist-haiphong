@@ -1,0 +1,21 @@
+{
+	"$schema": "https://playground.wordpress.net/blueprint-schema.json",
+	"landingPage": "/",
+	"preferredVersions": {
+		"php": "8.3",
+		"wp": "latest"
+	},
+	"login": true,
+	"steps": [
+		{ "step": "setSiteLanguage", "language": "vi" },
+		{ "step": "activateTheme", "themeFolderName": "toplist-haiphong" },
+		{
+			"step": "installPlugin",
+			"pluginData": { "resource": "wordpress.org/plugins", "slug": "polylang" },
+			"options": { "activate": true }
+		},
+		{ "step": "activatePlugin", "pluginPath": "toplist-demo-content/toplist-demo-content.php" },
+		{ "step": "runPHP", "code": "<?php require '/wordpress/wp-load.php'; foreach ( array( 'setup', 'posts', 'images', 'menus', 'languages' ) as $s ) { thp_demo_run_step_fully( $s ); }" },
+		{ "step": "runPHP", "code": "<?php require '/wordpress/wp-load.php'; echo thp_demo_run_step_fully( 'english' );" }
+	]
+}

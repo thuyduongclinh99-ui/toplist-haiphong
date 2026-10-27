@@ -1,0 +1,13 @@
+/*
+Theme Name: Toplist Hải Phòng
+Theme URI: https://toplisthaiphong.com
+Description: Giao diện tạp chí số cho cổng toplist du lịch, ẩm thực, lưu trú Hải Phòng. Màu biển xanh và đỏ hoa phượng, font Be Vietnam Pro.
+Version: 1.0.0
+Requires at least: 6.4
+Requires PHP: 7.4
+License: GNU General Public License v2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: toplist-haiphong
+*/
+
+/* Styles live in assets/css/main.css (built from src/tailwind.css). */
