@@ -47,13 +47,13 @@ function thp_supabase_request( $method, $path, $args = array() ) {
 	$args            = wp_parse_args( $args, array( 'headers' => array() ) );
 	$args['method']  = $method;
 	$args['timeout'] = 60;
-	$args['headers'] = array_merge(
-		array(
-			'Authorization' => 'Bearer ' . $config['key'],
-			'apikey'        => $config['key'],
-		),
-		$args['headers']
-	);
+	$auth            = array( 'apikey' => $config['key'] );
+	// Legacy service_role keys are JWTs and also go in Authorization; new
+	// sb_secret_ keys are not JWTs and only belong in the apikey header.
+	if ( 0 !== strpos( $config['key'], 'sb_' ) ) {
+		$auth['Authorization'] = 'Bearer ' . $config['key'];
+	}
+	$args['headers'] = array_merge( $auth, $args['headers'] );
 	return wp_remote_request( $config['api'] . $path, $args );
 }
 
