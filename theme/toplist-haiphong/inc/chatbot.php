@@ -262,7 +262,7 @@ function thp_chat_ask_model( array $messages, array $catalog ) {
 	$payload = array(
 		'model'       => $models[0],
 		'messages'    => array_merge( array( array( 'role' => 'system', 'content' => thp_chat_system_prompt( $catalog ) ) ), $messages ),
-		'max_tokens'  => 700,
+		'max_tokens'  => 1200,
 		'temperature' => 0.4,
 	);
 	if ( false !== strpos( $config['base'], 'openrouter.ai' ) ) {
@@ -299,8 +299,12 @@ function thp_chat_ask_model( array $messages, array $catalog ) {
 	}
 	$reply = isset( $body['choices'][0]['message']['content'] ) ? (string) $body['choices'][0]['message']['content'] : '';
 	// Some free models think out loud inside <think> tags before answering.
-	$reply = preg_replace( '#<think>.*?</think>#s', '', $reply );
-	return trim( $reply );
+	$reply = trim( preg_replace( '#<think>.*?</think>#s', '', $reply ) );
+	// Cut off at the length limit: drop the unfinished last line.
+	if ( isset( $body['choices'][0]['finish_reason'] ) && 'length' === $body['choices'][0]['finish_reason'] && false !== strrpos( $reply, "\n" ) ) {
+		$reply = rtrim( substr( $reply, 0, strrpos( $reply, "\n" ) ) );
+	}
+	return $reply;
 }
 
 /**
