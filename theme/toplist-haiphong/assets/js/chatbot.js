@@ -33,7 +33,7 @@
 		});
 	}
 
-	// Plain text with [text](url), bare URLs, **bold** and "- " bullets.
+	// Plain text with [text](url), bare URLs, **bold**, *italic* and "- " bullets.
 	function format(text) {
 		var html = escapeHtml(text).replace(
 			/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)|(https?:\/\/[^\s<]+[^\s<.,;:!?)\]])/g,
@@ -45,8 +45,9 @@
 			}
 		);
 		return html
-			.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
 			.replace(/^\s*[-*]\s+/gm, '• ')
+			.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+			.replace(/\*([^*\n]+)\*/g, '<em>$1</em>')
 			.replace(/\n/g, '<br>');
 	}
 
