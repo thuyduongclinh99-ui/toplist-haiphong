@@ -39,7 +39,7 @@ services:
         sync: false
       - key: WP_ADMIN_EMAIL
         sync: false
-      # Travel chatbot: an OpenRouter API key (openrouter.ai → Keys). Without it
+      # Travel chatbot: a Gemini key (aistudio.google.com/apikey) or an OpenRouter key. Without it
       # the chat answers with matching articles only. Optional AI_MODEL overrides
       # the free models chosen in theme/toplist-haiphong/inc/chatbot.php.
       - key: AI_API_KEY

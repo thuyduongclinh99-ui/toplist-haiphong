@@ -2,12 +2,13 @@
 /**
  * Travel chatbot: REST endpoint POST /wp-json/thp/v1/chat.
  *
- * Answers through any OpenAI-compatible chat API (OpenRouter by default),
- * configured by environment variables so the key never reaches the browser:
+ * Answers through any OpenAI-compatible chat API, configured by environment
+ * variables so the key never reaches the browser:
  *   AI_API_KEY  – required; without it visitors get matching articles instead.
- *   AI_API_BASE – default https://openrouter.ai/api/v1
- *   AI_MODEL    – one model id, or several separated by commas: OpenRouter
- *                 then falls back to the next one when a model is busy.
+ *                 A Google AI Studio key (AIza…) selects Gemini, any other key OpenRouter.
+ *   AI_API_BASE – optional; overrides the provider address.
+ *   AI_MODEL    – optional; one model id, or several separated by commas,
+ *                 tried in order when a model is busy or out of free quota.
  * The model sees a compact list of the site's places so it can link to them.
  *
  * @package toplist-haiphong
@@ -33,11 +34,20 @@ function thp_chat_config() {
 		}
 		return $value ? (string) $value : $default;
 	};
-	return array(
-		'key'   => $read( 'AI_API_KEY', '' ),
-		'base'  => rtrim( $read( 'AI_API_BASE', 'https://openrouter.ai/api/v1' ), '/' ),
+	$key = $read( 'AI_API_KEY', '' );
+	if ( 0 === strpos( $key, 'AIza' ) ) {
+		// Gemini free tier: each model has its own daily quota, so later ones take over when one runs out.
+		$base  = 'https://generativelanguage.googleapis.com/v1beta/openai';
+		$model = 'gemini-3.8-flash,gemini-3.6-flash,gemini-2.5-flash,gemini-3.5-flash-lite';
+	} else {
 		// Fixed free models write cleaner Vietnamese than the random openrouter/free pick, kept as the last resort.
-		'model' => $read( 'AI_MODEL', 'google/gemma-4-31b-it:free,nvidia/nemotron-3-ultra-550b-a55b:free,openrouter/free' ),
+		$base  = 'https://openrouter.ai/api/v1';
+		$model = 'google/gemma-4-31b-it:free,nvidia/nemotron-3-ultra-550b-a55b:free,openrouter/free';
+	}
+	return array(
+		'key'   => $key,
+		'base'  => rtrim( $read( 'AI_API_BASE', $base ), '/' ),
+		'model' => $read( 'AI_MODEL', $model ),
 	);
 }
 
@@ -204,7 +214,10 @@ function thp_chat_catalog( $lang ) {
 			'summary'   => wp_trim_words( $post->post_excerpt ? $post->post_excerpt : wp_strip_all_tags( $post->post_content ), 30, '…' ),
 		);
 	}
-	set_transient( 'thp_chat_catalog_' . $lang, $catalog, DAY_IN_SECONDS );
+	// Not cached while empty: during the first import posts get their language after being saved.
+	if ( $catalog ) {
+		set_transient( 'thp_chat_catalog_' . $lang, $catalog, DAY_IN_SECONDS );
+	}
 	return $catalog;
 }
 
@@ -258,25 +271,51 @@ function thp_chat_ask_model( array $messages, array $catalog ) {
 		return '';
 	}
 
-	$models  = array_values( array_filter( array_map( 'trim', explode( ',', $config['model'] ) ) ) );
-	$payload = array(
-		'model'       => $models[0],
+	$models     = array_values( array_filter( array_map( 'trim', explode( ',', $config['model'] ) ) ) );
+	$openrouter = false !== strpos( $config['base'], 'openrouter.ai' );
+	$payload    = array(
 		'messages'    => array_merge( array( array( 'role' => 'system', 'content' => thp_chat_system_prompt( $catalog ) ) ), $messages ),
 		'max_tokens'  => 1200,
 		'temperature' => 0.4,
 	);
-	if ( false !== strpos( $config['base'], 'openrouter.ai' ) ) {
+
+	if ( $openrouter ) {
+		// OpenRouter switches between the listed models itself.
+		$payload['model'] = $models[0];
 		if ( count( $models ) > 1 ) {
 			$payload['models'] = $models;
 		}
 		// Keep a reasoning model's thinking out of the answer.
 		$payload['reasoning'] = array( 'exclude' => true );
+		return thp_chat_request( $config, $payload );
 	}
 
+	if ( false !== strpos( $config['base'], 'generativelanguage.googleapis.com' ) ) {
+		// Travel tips need little thinking; this keeps answers fast and within the token limit.
+		$payload['reasoning_effort'] = 'minimal';
+	}
+	foreach ( $models as $model ) {
+		$payload['model'] = $model;
+		$reply            = thp_chat_request( $config, $payload );
+		if ( '' !== $reply ) {
+			return $reply;
+		}
+	}
+	return '';
+}
+
+/**
+ * One chat completion call. Returns the answer text, or '' on any failure.
+ *
+ * @param array $config  API settings.
+ * @param array $payload Request body.
+ * @return string
+ */
+function thp_chat_request( array $config, array $payload ) {
 	$response = wp_remote_post(
 		$config['base'] . '/chat/completions',
 		array(
-			'timeout' => 45,
+			'timeout' => 30,
 			'headers' => array(
 				'Authorization' => 'Bearer ' . $config['key'],
 				'Content-Type'  => 'application/json',
@@ -294,7 +333,7 @@ function thp_chat_ask_model( array $messages, array $catalog ) {
 	$code = wp_remote_retrieve_response_code( $response );
 	$body = json_decode( wp_remote_retrieve_body( $response ), true );
 	if ( 200 !== $code ) {
-		error_log( 'Chatbot: API returned ' . $code . ' ' . ( isset( $body['error']['message'] ) ? $body['error']['message'] : '' ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
+		error_log( 'Chatbot: ' . $payload['model'] . ' returned ' . $code . ' ' . ( isset( $body['error']['message'] ) ? $body['error']['message'] : '' ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
 		return '';
 	}
 	$reply = isset( $body['choices'][0]['message']['content'] ) ? (string) $body['choices'][0]['message']['content'] : '';
