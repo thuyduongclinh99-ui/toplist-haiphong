@@ -32,7 +32,9 @@ function thp_chat_config() {
 		if ( ! $value && defined( 'THP_' . $name ) ) {
 			$value = constant( 'THP_' . $name );
 		}
-		return $value ? (string) $value : $default;
+		// Pasted values often carry a stray space or line break, which breaks the auth header.
+		$value = trim( (string) $value );
+		return '' !== $value ? $value : $default;
 	};
 	$key = $read( 'AI_API_KEY', '' );
 	if ( 0 === strpos( $key, 'AIza' ) ) {
