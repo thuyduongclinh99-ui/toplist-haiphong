@@ -5,7 +5,7 @@
  * Answers through any OpenAI-compatible chat API, configured by environment
  * variables so the key never reaches the browser:
  *   AI_API_KEY  – required; without it visitors get matching articles instead.
- *                 A Google AI Studio key (AIza…) selects Gemini, any other key OpenRouter.
+ *                 An OpenRouter key (sk-or-…) selects OpenRouter, any other key Gemini.
  *   AI_API_BASE – optional; overrides the provider address.
  *   AI_MODEL    – optional; one model id, or several separated by commas,
  *                 tried in order when a model is busy or out of free quota.
@@ -37,7 +37,8 @@ function thp_chat_config() {
 		return '' !== $value ? $value : $default;
 	};
 	$key = $read( 'AI_API_KEY', '' );
-	if ( 0 === strpos( $key, 'AIza' ) ) {
+	// OpenRouter keys start with "sk-or-"; Google AI Studio keys come in more than one format.
+	if ( 0 !== strpos( $key, 'sk-or-' ) ) {
 		// Gemini free tier: each model has its own daily quota, so later ones take over when one runs out.
 		$base  = 'https://generativelanguage.googleapis.com/v1beta/openai';
 		$model = 'gemini-3.8-flash,gemini-3.6-flash,gemini-2.5-flash,gemini-3.5-flash-lite';

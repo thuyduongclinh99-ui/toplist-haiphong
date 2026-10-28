@@ -34,7 +34,7 @@ Lần đầu còn nạp thêm 28 bài song ngữ.
 | `SUPABASE_S3_ACCESS_KEY_ID`, `SUPABASE_S3_SECRET_ACCESS_KEY` | Supabase → **Storage → S3 Configuration → New access key** |
 | `SUPABASE_S3_REGION`, `SUPABASE_BUCKET` | `ap-southeast-1`, `media` |
 | `WP_ADMIN_USER`, `WP_ADMIN_PASSWORD`, `WP_ADMIN_EMAIL` | Tài khoản quản trị tạo ở lần khởi động đầu |
-| `AI_API_KEY` | Khóa API cho chatbot du lịch. Khuyên dùng khóa Gemini miễn phí: [aistudio.google.com/apikey](https://aistudio.google.com/apikey) → **Create API key** (khóa bắt đầu bằng `AIza`). Khóa OpenRouter (`sk-or-…`) cũng dùng được. Bỏ trống thì chatbot chỉ gợi ý bài viết liên quan |
+| `AI_API_KEY` | Khóa API cho chatbot du lịch. Khuyên dùng khóa Gemini miễn phí: [aistudio.google.com/apikey](https://aistudio.google.com/apikey) → **Create API key**. Khóa OpenRouter (`sk-or-…`) cũng dùng được. Bỏ trống thì chatbot chỉ gợi ý bài viết liên quan |
 | `AI_MODEL` | Không bắt buộc. Bỏ trống thì dùng vài model miễn phí của nhà cung cấp tương ứng với khóa; model này hết lượt thì tự chuyển sang model sau. Muốn đổi, ghi tên model, nhiều model thì cách nhau bằng dấu phẩy |
 
 **Chatbot du lịch** ([inc/chatbot.php](theme/toplist-haiphong/inc/chatbot.php)): nút chat ở góc phải mọi trang, chỉ trả lời câu hỏi về du lịch, gợi ý kèm link bài trên site. Mỗi khách hỏi tối đa 15 câu trong 10 phút. Khi AI hết lượt miễn phí hoặc lỗi, chatbot gợi ý các bài viết khớp với câu hỏi. Muốn dùng nhà cung cấp khác có API kiểu OpenAI, đặt thêm `AI_API_BASE` là địa chỉ API của nhà cung cấp đó (phần trước `/chat/completions`).
