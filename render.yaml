@@ -39,6 +39,12 @@ services:
         sync: false
       - key: WP_ADMIN_EMAIL
         sync: false
+      # Travel chatbot: an OpenRouter API key (openrouter.ai → Keys). Without it
+      # the chat answers with matching articles only.
+      - key: AI_API_KEY
+        sync: false
+      - key: AI_MODEL
+        value: openrouter/free
       # Fixed salts so logins survive restarts.
       - key: WORDPRESS_AUTH_KEY
         generateValue: true

@@ -109,6 +109,22 @@ return array(
 	'Bình chọn & xếp hạng độc lập'                       => 'Independent votes & rankings',
 	'Bảo lưu mọi quyền.'                                 => 'All rights reserved.',
 
+	// Chatbot.
+	'Trợ lý du lịch'                                     => 'Travel assistant',
+	'Hỏi trợ lý du lịch'                                 => 'Ask the travel assistant',
+	'Chỉ trả lời câu hỏi về du lịch'                     => 'Travel questions only',
+	'Xin chào! Mình là trợ lý du lịch của Toplist Hải Phòng. Bạn muốn hỏi về điểm tham quan, món ngon, chỗ ở hay lịch trình nào?' => 'Hi! I am the Toplist Hai Phong travel assistant. Ask me about sights, food, places to stay or itineraries.',
+	'Nhập câu hỏi về du lịch…'                           => 'Ask a travel question…',
+	'Gửi'                                                => 'Send',
+	'Đóng'                                               => 'Close',
+	'Xóa cuộc trò chuyện'                                => 'Clear chat',
+	'Đang trả lời…'                                      => 'Typing…',
+	'Bài viết liên quan:'                                => 'Related articles:',
+	'Không kết nối được trợ lý. Bạn thử lại sau nhé.'    => 'Could not reach the assistant. Please try again later.',
+	'Bạn hỏi nhanh quá, đợi vài phút rồi hỏi tiếp nhé.'  => 'You are asking too fast. Please wait a few minutes.',
+	'Trợ lý AI đang bận. Bạn tham khảo các bài viết này nhé:' => 'The AI assistant is busy. These articles may help:',
+	'Trợ lý AI đang bận. Bạn thử lại sau ít phút nhé.'   => 'The AI assistant is busy. Please try again in a few minutes.',
+
 	// 404.
 	'Không tìm thấy trang'                               => 'Page not found',
 	'Đường dẫn có thể đã thay đổi hoặc địa điểm không còn. Hãy thử tìm kiếm bên dưới.' => 'The link may have changed or the place no longer exists. Try searching below.',

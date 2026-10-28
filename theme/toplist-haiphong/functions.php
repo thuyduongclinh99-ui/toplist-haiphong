@@ -16,3 +16,4 @@ require THP_DIR . '/inc/setup.php';
 require THP_DIR . '/inc/place-meta.php';
 require THP_DIR . '/inc/queries.php';
 require THP_DIR . '/inc/template-tags.php';
+require THP_DIR . '/inc/chatbot.php';

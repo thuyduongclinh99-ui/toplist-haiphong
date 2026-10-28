@@ -16,7 +16,8 @@ defined( 'ABSPATH' ) || exit;
  */
 function thp_lang() {
 	$lang = function_exists( 'pll_current_language' ) ? pll_current_language( 'slug' ) : '';
-	return $lang ? $lang : 'vi';
+	// REST requests carry no Polylang language; the chatbot sets it through this filter.
+	return apply_filters( 'thp_lang', $lang ? $lang : 'vi' );
 }
 
 /**

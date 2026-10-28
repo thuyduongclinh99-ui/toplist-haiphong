@@ -34,6 +34,10 @@ Lần đầu còn nạp thêm 28 bài song ngữ.
 | `SUPABASE_S3_ACCESS_KEY_ID`, `SUPABASE_S3_SECRET_ACCESS_KEY` | Supabase → **Storage → S3 Configuration → New access key** |
 | `SUPABASE_S3_REGION`, `SUPABASE_BUCKET` | `ap-southeast-1`, `media` |
 | `WP_ADMIN_USER`, `WP_ADMIN_PASSWORD`, `WP_ADMIN_EMAIL` | Tài khoản quản trị tạo ở lần khởi động đầu |
+| `AI_API_KEY` | Khóa API cho chatbot du lịch: [openrouter.ai](https://openrouter.ai) → **Keys → Create Key**. Bỏ trống thì chatbot chỉ gợi ý bài viết liên quan |
+| `AI_MODEL` | Mặc định `openrouter/free` (miễn phí, 50 câu hỏi/ngày cho cả site). Có thể đổi sang model trả phí của OpenRouter mà không phải sửa code |
+
+**Chatbot du lịch** ([inc/chatbot.php](theme/toplist-haiphong/inc/chatbot.php)): nút chat ở góc phải mọi trang, chỉ trả lời câu hỏi về du lịch, gợi ý kèm link bài trên site. Mỗi khách hỏi tối đa 15 câu trong 10 phút. Khi AI hết lượt miễn phí hoặc lỗi, chatbot gợi ý các bài viết khớp với câu hỏi. Muốn dùng nhà cung cấp khác có API kiểu OpenAI, đặt thêm `AI_API_BASE` là địa chỉ API của nhà cung cấp đó (phần trước `/chat/completions`).
 
 **Cập nhật site:** sửa code rồi đẩy lên nhánh `main`, Render tự build và deploy lại (khoảng 5 phút). Thêm `[skip render]` vào nội dung commit nếu chỉ sửa tài liệu.
 
