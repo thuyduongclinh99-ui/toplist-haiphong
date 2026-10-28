@@ -6,7 +6,8 @@
  * configured by environment variables so the key never reaches the browser:
  *   AI_API_KEY  – required; without it visitors get matching articles instead.
  *   AI_API_BASE – default https://openrouter.ai/api/v1
- *   AI_MODEL    – default openrouter/free
+ *   AI_MODEL    – one model id, or several separated by commas: OpenRouter
+ *                 then falls back to the next one when a model is busy.
  * The model sees a compact list of the site's places so it can link to them.
  *
  * @package toplist-haiphong
@@ -35,7 +36,8 @@ function thp_chat_config() {
 	return array(
 		'key'   => $read( 'AI_API_KEY', '' ),
 		'base'  => rtrim( $read( 'AI_API_BASE', 'https://openrouter.ai/api/v1' ), '/' ),
-		'model' => $read( 'AI_MODEL', 'openrouter/free' ),
+		// Fixed free models write cleaner Vietnamese than the random openrouter/free pick, kept as the last resort.
+		'model' => $read( 'AI_MODEL', 'google/gemma-4-31b-it:free,nvidia/nemotron-3-ultra-550b-a55b:free,openrouter/free' ),
 	);
 }
 
@@ -256,6 +258,21 @@ function thp_chat_ask_model( array $messages, array $catalog ) {
 		return '';
 	}
 
+	$models  = array_values( array_filter( array_map( 'trim', explode( ',', $config['model'] ) ) ) );
+	$payload = array(
+		'model'       => $models[0],
+		'messages'    => array_merge( array( array( 'role' => 'system', 'content' => thp_chat_system_prompt( $catalog ) ) ), $messages ),
+		'max_tokens'  => 700,
+		'temperature' => 0.4,
+	);
+	if ( false !== strpos( $config['base'], 'openrouter.ai' ) ) {
+		if ( count( $models ) > 1 ) {
+			$payload['models'] = $models;
+		}
+		// Keep a reasoning model's thinking out of the answer.
+		$payload['reasoning'] = array( 'exclude' => true );
+	}
+
 	$response = wp_remote_post(
 		$config['base'] . '/chat/completions',
 		array(
@@ -266,14 +283,7 @@ function thp_chat_ask_model( array $messages, array $catalog ) {
 				'HTTP-Referer'  => home_url( '/' ),
 				'X-Title'       => 'Toplist Hai Phong',
 			),
-			'body'    => wp_json_encode(
-				array(
-					'model'       => $config['model'],
-					'messages'    => array_merge( array( array( 'role' => 'system', 'content' => thp_chat_system_prompt( $catalog ) ) ), $messages ),
-					'max_tokens'  => 700,
-					'temperature' => 0.4,
-				)
-			),
+			'body'    => wp_json_encode( $payload ),
 		)
 	);
 
